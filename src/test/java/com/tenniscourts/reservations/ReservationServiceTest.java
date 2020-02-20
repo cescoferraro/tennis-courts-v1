@@ -33,37 +33,4 @@ public class ReservationServiceTest {
 
         Assert.assertEquals(reservationService.getRefundValue(Reservation.builder().schedule(schedule).value(new BigDecimal(10L)).build()), new BigDecimal(10));
     }
-
-    @Test
-    public void getRefundValue75Percent() {
-        Schedule schedule = new Schedule();
-
-        LocalDateTime startDateTime = LocalDateTime.now().plusHours(13);
-
-        schedule.setStartDateTime(startDateTime);
-
-        Assert.assertEquals(reservationService.getRefundValue(Reservation.builder().schedule(schedule).value(new BigDecimal(10)).build()), new BigDecimal("7.50"));
-    }
-
-    @Test
-    public void getRefundValue50Percent() {
-        Schedule schedule = new Schedule();
-
-        LocalDateTime startDateTime = LocalDateTime.now().plusHours(4);
-
-        schedule.setStartDateTime(startDateTime);
-
-        Assert.assertEquals(reservationService.getRefundValue(Reservation.builder().schedule(schedule).value(new BigDecimal(10)).build()), new BigDecimal("5.00"));
-    }
-
-    @Test
-    public void getRefundValue25Percent() {
-        Schedule schedule = new Schedule();
-
-        LocalDateTime startDateTime = LocalDateTime.now().plusHours(1);
-
-        schedule.setStartDateTime(startDateTime);
-
-        Assert.assertEquals(reservationService.getRefundValue(Reservation.builder().schedule(schedule).value(new BigDecimal(10)).build()), new BigDecimal("2.50"));
-    }
 }

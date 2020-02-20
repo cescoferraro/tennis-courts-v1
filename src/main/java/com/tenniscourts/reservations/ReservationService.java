@@ -1,11 +1,6 @@
 package com.tenniscourts.reservations;
 
-import com.tenniscourts.exceptions.AlreadyExistsEntityException;
 import com.tenniscourts.exceptions.EntityNotFoundException;
-import com.tenniscourts.guests.Guest;
-import com.tenniscourts.guests.GuestRepository;
-import com.tenniscourts.schedules.Schedule;
-import com.tenniscourts.schedules.ScheduleRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,46 +14,10 @@ public class ReservationService {
 
     private final ReservationRepository reservationRepository;
 
-    private final GuestRepository guestRepository;
-
-    private final ScheduleRepository scheduleRepository;
-
     private final ReservationMapper reservationMapper;
 
     public ReservationDTO bookReservation(CreateReservationRequestDTO createReservationRequestDTO) {
-
-        boolean hasExistingEntity = reservationRepository.findBySchedule_Id(createReservationRequestDTO.getScheduleId()).stream().anyMatch(reservation ->
-                ReservationStatus.READY_TO_PLAY.equals(reservation.getReservationStatus()));
-
-        if (hasExistingEntity) {
-            throw new AlreadyExistsEntityException("There is already a reservation for this schedule");
-        }
-
-        return guestRepository.findById(createReservationRequestDTO.getGuestId()).map(guest ->
-                scheduleRepository.findById(createReservationRequestDTO.getScheduleId()).map(schedule -> {
-                    if (schedule.getStartDateTime().isBefore(LocalDateTime.now())) {
-                        throw new IllegalArgumentException("Can cancel/reschedule only future dates.");
-                    }
-                    return createReservation(createReservationRequestDTO, guest, schedule);
-                })
-                .orElseThrow(() -> {
-                    throw new EntityNotFoundException("Schedule not found.");
-                }))
-                .orElseThrow(() -> {
-                    throw new EntityNotFoundException("Guest not found.");
-                });
-    }
-
-    private ReservationDTO createReservation(CreateReservationRequestDTO createReservationRequestDTO, Guest guest, Schedule schedule) {
-
-        Reservation reservation = reservationMapper.map(createReservationRequestDTO);
-        reservation.setGuest(guest);
-        reservation.setReservationStatus(ReservationStatus.READY_TO_PLAY);
-        reservation.setValue(BigDecimal.valueOf(10));
-
-        schedule.addReservation(reservation);
-
-        return reservationMapper.map(reservationRepository.saveAndFlush(reservation));
+        throw new UnsupportedOperationException();
     }
 
     public ReservationDTO findReservation(Long reservationId) {
@@ -103,16 +62,10 @@ public class ReservationService {
     }
 
     public BigDecimal getRefundValue(Reservation reservation) {
-        long minutes = ChronoUnit.MINUTES.between(LocalDateTime.now(), reservation.getSchedule().getStartDateTime());
+        long hours = ChronoUnit.HOURS.between(LocalDateTime.now(), reservation.getSchedule().getStartDateTime());
 
-        if (minutes >= 1440) {
+        if (hours >= 24) {
             return reservation.getValue();
-        } else if (minutes >= 720) {
-            return reservation.getValue().multiply(new BigDecimal("0.75"));
-        } else if (minutes >= 120) {
-            return reservation.getValue().multiply(new BigDecimal("0.50"));
-        } else if (minutes >= 1) {
-            return reservation.getValue().multiply(new BigDecimal("0.25"));
         }
 
         return BigDecimal.ZERO;
