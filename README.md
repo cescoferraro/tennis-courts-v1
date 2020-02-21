@@ -41,6 +41,6 @@ The actual code has the bellow user stories already implemented. The **bold** on
 1. Ensure the code is well tested
  
 # Deliverables and Closing Note 
-When you finish the implementation please submit a Pull Request to @ermathias repository.
+For delivering your code you have to do the **FORK** of the @ermathias(ermathias/tennis-courts-v1) repository, then when you finish the implementation please submit a Pull Request to this **FORK** which will be placed in your github account.
 
-Good Luck and have fun!
+Good Luck and happy coding!
