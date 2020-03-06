@@ -5,7 +5,7 @@ You have been tasked to fix some misimplementations of a backend API for a simpl
 
 This code is already developed in https://github.com/ermathias/tennis-courts-v1 - Clone it, open a feature branch.
 
-The actual code has the bellow user stories already implemented. The **bold** ones need your attention to be implemented
+The actual code has the below user stories already implemented. You should complete at least one of the **bold** ones to be able to attend the interview. **In case you are comfortable to complete other ones it will count in your evaluation.**
 
 **1. As a User I want to be able to book a reservation for one or more tennis court at a given date schedule**
 
