@@ -3,25 +3,40 @@ package com.tenniscourts.reservations;
 import com.tenniscourts.config.BaseRestController;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @AllArgsConstructor
+@RestController
+@Controller
 public class ReservationController extends BaseRestController {
 
     private final ReservationService reservationService;
 
-    public ResponseEntity<Void> bookReservation(CreateReservationRequestDTO createReservationRequestDTO) {
+    @RequestMapping(path = "/reservation", method = RequestMethod.POST)
+    public ResponseEntity<Void> bookReservation(@RequestBody CreateReservationRequestDTO createReservationRequestDTO) throws Exception {
         return ResponseEntity.created(locationByEntity(reservationService.bookReservation(createReservationRequestDTO).getId())).build();
     }
 
-    public ResponseEntity<ReservationDTO> findReservation(Long reservationId) {
+    @RequestMapping(path = "/reservation/past", method = RequestMethod.GET)
+    public ResponseEntity<List<ReservationDTO>> findPastReservation() {
+        return ResponseEntity.ok(reservationService.findPastReservation());
+    }
+
+    @RequestMapping(path = "/reservation/{reservationId}", method = RequestMethod.GET)
+    public ResponseEntity<ReservationDTO> findReservation(@PathVariable("reservationId") Long reservationId) {
         return ResponseEntity.ok(reservationService.findReservation(reservationId));
     }
 
-    public ResponseEntity<ReservationDTO> cancelReservation(Long reservationId) {
+    @RequestMapping(path = "/reservation/cancel/{id}", method = RequestMethod.POST)
+    public ResponseEntity<ReservationDTO> cancelReservation(@PathVariable("id") Long reservationId) {
         return ResponseEntity.ok(reservationService.cancelReservation(reservationId));
     }
 
-    public ResponseEntity<ReservationDTO> rescheduleReservation(Long reservationId, Long scheduleId) {
+    @RequestMapping(path = "/reservation/reschedule/{reservationId}/{scheduleId}", method = RequestMethod.POST)
+    public ResponseEntity<ReservationDTO> rescheduleReservation(@PathVariable("reservationId") Long reservationId, @PathVariable("scheduleId") Long scheduleId) throws Exception {
         return ResponseEntity.ok(reservationService.rescheduleReservation(reservationId, scheduleId));
     }
 }
